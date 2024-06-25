@@ -8,61 +8,51 @@
 </head>
 <body>
     <div class="weather-app">
-
         <div>
-
-             <div id="city"><input type="text"></div>
-
-             <div onclick="options()" id="button"><button>get weather</button></div>
-
+            <div id="city"><input type="text" placeholder="Enter city name"></div>
+            <div id="button"><button onclick="getCityWeather()">Get Weather</button></div>
+            <div id="locationButton"><button onclick="getLocationWeather()">Get Weather by Location</button></div>
         </div>
-
         <div class="boxy">
-
+            <div id="city-name"></div>
             <div id="cloud"></div>
             <div id="feels"></div>
             <div id="humidity"></div>
-            
-            <div id="sunrise"></div>
-            <div id="sunset"></div>
             <div id="temp"></div>
             <div id="degrees"></div>
             <div id="speed"></div>
-
+            <div id="aqi"></div>
+            <div id="units-container">
+                <label for="units">Temperature Unit:</label>
+                <select id="units" onchange="updateUnit()">
+                    <option value="imperial">Fahrenheit</option>
+                    <option value="metric">Celsius</option>
+                </select>
+            </div>
         </div>
-
     </div>
+
+    <script src="script.js"></script>
 
     <!-- Include Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.0/firebase-analytics.js"></script>
     
     <!-- Your Firebase configuration and initialization code -->
-    <script src="script.js"></script>
-
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-analytics.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    <script>
         const firebaseConfig = {
-          apiKey: "AIzaSyAzvKKicEnro-80qvN8kOwK41PrIDjJQpg",
-          authDomain: "weather-app-d12aa.firebaseapp.com",
-          projectId: "weather-app-d12aa",
-          storageBucket: "weather-app-d12aa.appspot.com",
-          messagingSenderId: "786879588649",
-          appId: "1:786879588649:web:64c714ab854abed689ef38",
-          measurementId: "G-FR2KK09LKN"
+            apiKey: "AIzaSyCMl3Vau9rEzFsiZGnXDbNHG7UnChN4fbc",
+            authDomain: "weather-app-7b0a8.firebaseapp.com",
+            projectId: "weather-app-7b0a8",
+            storageBucket: "weather-app-7b0a8.appspot.com",
+            messagingSenderId: "701228850958",
+            appId: "1:701228850958:web:ad21b69b19a698d455c15f",
+            measurementId: "G-7P97YNVWQ5"
         };
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-      </script>
 
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+    </script>
 </body>
 </html>

@@ -1,49 +1,66 @@
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyCMl3Vau9rEzFsiZGnXDbNHG7UnChN4fbc",
-    authDomain: "weather-app-7b0a8.firebaseapp.com",
-    projectId: "weather-app-7b0a8",
-    storageBucket: "weather-app-7b0a8.appspot.com",
-    messagingSenderId: "701228850958",
-    appId: "1:701228850958:web:ad21b69b19a698d455c15f",
-    measurementId: "G-7P97YNVWQ5"
-};
+const apiKey = 'feca8a6f51msh325820532a99432p1ba490jsn53e11577841f';
+const apiHost = 'weatherbit-v1-mashape.p.rapidapi.com';
 
-
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const analytics = firebase.getAnalytics(app);
-
-function options() {
-    const cityInput = document.querySelector("#city input");
-
-    const city = cityInput.value;
-    const url = 'https://weather-by-api-ninjas.p.rapidapi.com/v1/weather?city=' + city;
-
+async function getWeather(url) {
     const options = {
         method: 'GET',
         headers: {
-            'X-RapidAPI-Key': '71c8f56ccamshf9b5f9cfec279f0p1160a5jsn3228254e3ad5',
-            'X-RapidAPI-Host': 'weather-by-api-ninjas.p.rapidapi.com'
+            'x-rapidapi-key': apiKey,
+            'x-rapidapi-host': apiHost
         }
     };
 
-    fetch(url, options)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            document.getElementById("cloud").innerHTML = "Cloud percentage: " + data.cloud_pct + "%";
-            document.getElementById("feels").innerHTML = "Feels like: " + data.feels_like + "°C";
-            document.getElementById("humidity").innerHTML = "Humidity: " + data.humidity + "%";
-            document.getElementById("sunrise").innerHTML = "Sunrise: " + new Date(data.sunrise * 1000).toLocaleTimeString();
-            document.getElementById("sunset").innerHTML = "Sunset: " + new Date(data.sunset * 1000).toLocaleTimeString();
-            document.getElementById("temp").innerHTML = "Temperature: " + data.temp + "°C";
-            document.getElementById("degrees").innerHTML = "Wind Degrees: " + data.wind_degrees + "°";
-            document.getElementById("speed").innerHTML = "Wind Speed: " + data.wind_speed;
-        })
-        .catch(err => console.error('Error:', err));
+    try {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        updateUI(result);
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+function getCityWeather() {
+    const cityInput = document.querySelector("#city input");
+    const city = cityInput.value;
+    const units = document.getElementById('units').value;
+    const url = `https://${apiHost}/current?city=${city}&units=${units}`;
+    getWeather(url);
+}
+
+function getLocationWeather() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const units = document.getElementById('units').value;
+            const url = `https://${apiHost}/current?lat=${lat}&lon=${lon}&units=${units}`;
+            getWeather(url);
+        }, () => {
+            console.error('Geolocation is not supported by this browser.');
+        });
+    }
+}
+
+function updateUnit() {
+    const cityInput = document.querySelector("#city input");
+    if (cityInput.value) {
+        getCityWeather();
+    } else {
+        getLocationWeather();
+    }
+}
+
+function updateUI(data) {
+    const weather = data.data[0];
+    document.getElementById("city-name").innerHTML = `City: ${weather.city_name}`;
+    document.getElementById("cloud").innerHTML = `Cloud percentage: ${weather.clouds}%`;
+    document.getElementById("feels").innerHTML = `Feels like: ${weather.app_temp}°`;
+    document.getElementById("humidity").innerHTML = `Humidity: ${weather.rh}%`;
+    document.getElementById("temp").innerHTML = `Temperature: ${weather.temp}°`;
+    document.getElementById("degrees").innerHTML = `Wind Degrees: ${weather.wind_dir}°`;
+    document.getElementById("speed").innerHTML = `Wind Speed: ${weather.wind_spd} m/s`;
+    document.getElementById("aqi").innerHTML = `AQI: ${weather.aqi}`;
 }
